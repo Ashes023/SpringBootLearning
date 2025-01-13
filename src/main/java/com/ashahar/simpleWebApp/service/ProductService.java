@@ -1,6 +1,8 @@
 package com.ashahar.simpleWebApp.service;
 
 import com.ashahar.simpleWebApp.model.Product;
+import com.ashahar.simpleWebApp.repository.ProductRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,39 +12,27 @@ import java.util.List;
 @Service
 public class ProductService {
 
-    List<Product> products = new ArrayList<>( Arrays.asList(
-            new Product(101, "IPhone", 75000),
-            new Product(102,"Camera",60000)
-    ));
+    @Autowired
+    ProductRepo repo;
 
     public List<Product> getAllProducts() {
-        return products;
+        return repo.findAll();
     }
 
 
     public Product getProductById(int id) {
-        return products.stream().filter(p-> p.getProdId() == id).findFirst().orElse(new Product(100, "No Product", 404));
+        return repo.findById(id).orElse(new Product());
     }
 
     public void addProduct(Product product) {
-        products.add(product);
+        repo.save(product);
     }
 
     public void updateProduct(Product product) {
-        for(int x = 0; x < products.size(); x++){
-            if(products.get(x).getProdId() == product.getProdId()){
-                products.set(x, product);
-                break;
-            }
-        }
+        repo.save(product);
     }
 
     public void deleteProduct(int prodId) {
-        for(int x = 0; x < products.size(); x++){
-            if(products.get(x).getProdId() == prodId){
-                products.remove(x);
-                break;
-            }
-        }
+        repo.deleteById(prodId);
     }
 }
